@@ -1,12 +1,12 @@
 #coding=utf-8
 
 import cv2
-recognizer = cv2.face.LBPHFaceRecognizer_create()         # ±Ò¥Î°V½m¤HÁy¼Ò«¬¤èªk
-recognizer.read('face.yml')                               # Åª¨ú¤HÁy¼Ò«¬ÀÉ
-cascade_path = 'C:/Users/User/.vscode/haarcascade_frontalface_default.xml'  # ¸ü¤J¤HÁy°lÂÜ¼Ò«¬
-face_cascade = cv2.CascadeClassifier(cascade_path)        # ±Ò¥Î¤HÁy°lÂÜ
+recognizer = cv2.face.LBPHFaceRecognizer_create()         # å•Ÿç”¨è¨“ç·´äººè‡‰æ¨¡å‹æ–¹æ³•
+recognizer.read('face.yml')                               # è®€å–äººè‡‰æ¨¡å‹æª”
+cascade_path = 'C:/Users/User/.vscode/haarcascade_frontalface_default.xml'  # è¼‰å…¥äººè‡‰è¿½è¹¤æ¨¡å‹
+face_cascade = cv2.CascadeClassifier(cascade_path)        # å•Ÿç”¨äººè‡‰è¿½è¹¤
 
-cap = cv2.VideoCapture(0)                                 # ¶}±ÒÄá¼v¾÷
+cap = cv2.VideoCapture(0)                                 # é–‹å•Ÿæ”å½±æ©Ÿ
 if not cap.isOpened():
     print("Cannot open camera")
     exit()
@@ -15,32 +15,32 @@ while True:
     if not ret:
         print("Cannot receive frame")
         break
-    img = cv2.resize(img,(540,300))              # ÁY¤p¤Ø¤o¡A¥[§Ö¿ëÃÑ®Ä²v
-    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)  # Âà´«¦¨¶Â¥Õ
-    faces = face_cascade.detectMultiScale(gray)  # °lÂÜ¤HÁy ( ¥Øªº¦b©ó¼Ğ°O¥X¥~®Ø )
+    img = cv2.resize(img,(540,300))              # ç¸®å°å°ºå¯¸ï¼ŒåŠ å¿«è¾¨è­˜æ•ˆç‡
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)  # è½‰æ›æˆé»‘ç™½
+    faces = face_cascade.detectMultiScale(gray)  # è¿½è¹¤äººè‡‰ ( ç›®çš„åœ¨æ–¼æ¨™è¨˜å‡ºå¤–æ¡† )
 
-    # «Ø¥ß©m¦W©M id ªº¹ï·Óªí
+    # å»ºç«‹å§“åå’Œ id çš„å°ç…§è¡¨
     name = {
         '1':'Yichen',
         '2':'LiangYing',
         '3':'Orange',
-        '4':'bad bitch',
+       
       
         
     }
 
-    # ¨Ì§Ç§PÂ_¨C±iÁyÄİ©ó­ş­Ó id
+    # ä¾åºåˆ¤æ–·æ¯å¼µè‡‰å±¬æ–¼å“ªå€‹ id
     for(x,y,w,h) in faces:
-        cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)            # ¼Ğ°O¤HÁy¥~®Ø
-        idnum,confidence = recognizer.predict(gray[y:y+h,x:x+w])  # ¨ú¥X id ¸¹½X¥H¤Î«H¤ß«ü¼Æ confidence
+        cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)            # æ¨™è¨˜äººè‡‰å¤–æ¡†
+        idnum,confidence = recognizer.predict(gray[y:y+h,x:x+w])  # å–å‡º id è™Ÿç¢¼ä»¥åŠä¿¡å¿ƒæŒ‡æ•¸ confidence
         if confidence < 100:
-            text = name[str(idnum)]                               # ¦pªG«H¤ß«ü¼Æ¤p©ó 60¡A¨ú±o¹ïÀ³ªº¦W¦r
+            text = name[str(idnum)]                               # å¦‚æœä¿¡å¿ƒæŒ‡æ•¸å°æ–¼ 60ï¼Œå–å¾—å°æ‡‰çš„åå­—
         else:
-            text = '???'                                          # ¤£µM¦W¦r´N¬O ???
-        cv2.putText(img, text, (x,y-5),cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2, cv2.LINE_AA) # ¦b¤HÁy¥~®Ø®Ç¥[¤W¦W¦r
+            text = '???'                                          # ä¸ç„¶åå­—å°±æ˜¯ ???
+        cv2.putText(img, text, (x,y-5),cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2, cv2.LINE_AA) # åœ¨äººè‡‰å¤–æ¡†æ—åŠ ä¸Šåå­—
 
     cv2.imshow('oxxostudio', img)
     if cv2.waitKey(5) == ord('q'):
-        break    # «ö¤U q Áä°±¤î
+        break    # æŒ‰ä¸‹ q éµåœæ­¢
 cap.release()
 cv2.destroyAllWindows()
