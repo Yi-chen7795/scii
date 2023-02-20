@@ -1,12 +1,32 @@
 #coding=utf-8
-
+"""
+1.¤JÀ]¡B¥XÀ]®É¶¡
+2.¬İ­n¤£­n°»´ú¨ìÁy«áª½±µÃö±¼
+3.§ä§ä¬İ¦³¨S¦³µe­±¤£·|°¨¤W¥d¦íªº¤èªk
+"""
+import datetime
+import openpyxl
 import cv2
-recognizer = cv2.face.LBPHFaceRecognizer_create()         # å•Ÿç”¨è¨“ç·´äººè‡‰æ¨¡å‹æ–¹æ³•
-recognizer.read('face.yml')                               # è®€å–äººè‡‰æ¨¡å‹æª”
-cascade_path = 'C:/Users/User/.vscode/haarcascade_frontalface_default.xml'  # è¼‰å…¥äººè‡‰è¿½è¹¤æ¨¡å‹
-face_cascade = cv2.CascadeClassifier(cascade_path)        # å•Ÿç”¨äººè‡‰è¿½è¹¤
+import pyfirmata
+import time
 
-cap = cv2.VideoCapture(0)                                 # é–‹å•Ÿæ”å½±æ©Ÿ
+wb = openpyxl.load_workbook('scii.xlsx', data_only=True)  #¶}±Ò±ı¿é¤J¸ê®Æªºªí®æ
+s1 = wb['worksheet1']            
+
+date = datetime.date.today()    #¬ö¿ı°»´ú®É¤é´Á
+
+recognizer = cv2.face.LBPHFaceRecognizer_create()         # ±Ò¥Î°V½m¤HÁy¼Ò«¬
+recognizer.read('face.yml')                               # Åª¨ú§Ú­Ì­è­è°V½mªº¼Ò«¬¸ê®Æ
+cascade_path = 'C:/Users/User/.vscode/haarcascade_frontalface_default.xml'  # ¸ü¤J¤HÁy°lÂÜ¼Ò«¬(opencvªºgithub´£¨Ñ)
+face_cascade = cv2.CascadeClassifier(cascade_path)        # ±Ò¥Î¤HÁy°lÂÜ
+
+pin1 = 11                           #LED¿O¦ì¤l³]©w
+pin2 = 12
+pin3 = 13
+port = 'COM3'
+board = pyfirmata.Arduino(port)     #³s±µ¨ìArduino
+
+cap = cv2.VideoCapture(0)           # ¶}±ÒÄá¼v¾÷
 if not cap.isOpened():
     print("Cannot open camera")
     exit()
@@ -15,32 +35,67 @@ while True:
     if not ret:
         print("Cannot receive frame")
         break
-    img = cv2.resize(img,(540,300))              # ç¸®å°å°ºå¯¸ï¼ŒåŠ å¿«è¾¨è­˜æ•ˆç‡
-    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)  # è½‰æ›æˆé»‘ç™½
-    faces = face_cascade.detectMultiScale(gray)  # è¿½è¹¤äººè‡‰ ( ç›®çš„åœ¨æ–¼æ¨™è¨˜å‡ºå¤–æ¡† )
+    img = cv2.resize(img,(540,300))              # ÁY¤p¤Ø¤o¡A¥[§Ö¿ëÃÑ®Ä²v
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)  # Âà´«¦¨¶Â¥Õ
+    faces = face_cascade.detectMultiScale(gray)  # °lÂÜ¤HÁy ( ¬°¤F¼Ğ°O¥X¥~®Ø )
 
-    # å»ºç«‹å§“åå’Œ id çš„å°ç…§è¡¨
+    # «Ø¥ß±ıÅã¥Ü¤§id¹ïÀ³¦WºÙ
     name = {
         '1':'Yichen',
         '2':'LiangYing',
-        '3':'Orange',
-       
-      
-        
+        '3':'Orange'
     }
-
-    # ä¾åºåˆ¤æ–·æ¯å¼µè‡‰å±¬æ–¼å“ªå€‹ id
+    
+    Yichen = 0              #¨C­Ó¤H(§PÂ_²{¦b¶}Ãöª¬ºA)ªºªì©l­È³]¬°0(Ãö³¬)
+    LiangYing = 0
+    Orange = 0
+    
     for(x,y,w,h) in faces:
-        cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)            # æ¨™è¨˜äººè‡‰å¤–æ¡†
-        idnum,confidence = recognizer.predict(gray[y:y+h,x:x+w])  # å–å‡º id è™Ÿç¢¼ä»¥åŠä¿¡å¿ƒæŒ‡æ•¸ confidence
-        if confidence < 100:
-            text = name[str(idnum)]                               # å¦‚æœä¿¡å¿ƒæŒ‡æ•¸å°æ–¼ 60ï¼Œå–å¾—å°æ‡‰çš„åå­—
+        cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)            # ¼Ğ°O¤HÁy¥~®Ø
+        idnum,mistake = recognizer.predict(gray[y:y+h,x:x+w])  # ¨ú¥X id ¸¹½X¥H¤Î¿ëÃÑ»~®t­È
+        if mistake < 120:
+            text = name[str(idnum)]                               # ¦pªG»~®t­È¤p©ó120¡A¨ú±o¹ïÀ³ªº¦W¦r
+            if idnum == 1 and Yichen == 0:                        # ·í°»´ú¨ìid=1¥B¬°Ãö³¬ª¬ºA®É°õ¦æ¶}¿O
+                board.digital[pin1].write(1) 
+                time.sleep(5)
+                s1['B3'].value = date                             # ©ó¸Ó©m¦W¦C¶ñ¤J¤JÀ]¤é´Á
+                Yichen = 1
+                print("1 on")
+            if idnum == 1 and Yichen == 1:                        # ·í°»´ú¨ìid=2¥B¬°¶}±Òª¬ºA®É°õ¦æÃö¿O
+                board.digital[pin1].write(0)                      
+                time.sleep(5)
+                Yichen = 0
+                print("1 off")
+            if idnum == 2 and LiangYing == 0:
+                board.digital[pin2].write(1)
+                time.sleep(5)
+                s1['B2'].value = date
+                LiangYing = 1
+                print("2 on")
+            if idnum == 1 and LiangYing == 1:
+                board.digital[pin2].write(0)
+                time.sleep(5)
+                LiangYing = 0
+                print("2 off")
+            if idnum == 3 and Orange == 0:
+                board.digital[pin3].write(1)
+                time.sleep(5)
+                s1['B4'].value = date
+                Orange = 1
+                print("3 on")
+            if idnum == 1 and Orange == 1:
+                board.digital[pin3].write(0)
+                time.sleep(5)
+                Orange = 0
+                print("3 off")
+                
         else:
-            text = '???'                                          # ä¸ç„¶åå­—å°±æ˜¯ ???
-        cv2.putText(img, text, (x,y-5),cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2, cv2.LINE_AA) # åœ¨äººè‡‰å¤–æ¡†æ—åŠ ä¸Šåå­—
-
-    cv2.imshow('oxxostudio', img)
+            text = '???'                                          # °»´ú¤£¥X¬O½Ö®ÉÅã¥Ü ???
+        cv2.putText(img, text, (x,y-5),cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2, cv2.LINE_AA) # ¦b¤HÁy¥~®Ø®Ç¥[¤W¦W¦r
+    
+    wb.save('sciii.xlsx')               #Àx¦sªí®æ
+    cv2.imshow('camera', img)
     if cv2.waitKey(5) == ord('q'):
-        break    # æŒ‰ä¸‹ q éµåœæ­¢
+        break    # «ö¤U q Áä°±¤î
 cap.release()
 cv2.destroyAllWindows()
