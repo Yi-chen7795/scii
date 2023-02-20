@@ -2,23 +2,23 @@
 
 import cv2
 import numpy as np
-path ='C:/Users/User/.vscode/haarcascade_frontalface_default.xml'  # ¸ü¤J¤HÁy°lÂÜ¼Ò«¬(opencvªºgithub´£¨Ñ)
-detector = cv2.CascadeClassifier(path)            # ¸ü¤J¤HÁy°lÂÜ¼Ò«¬
-recog = cv2.face.LBPHFaceRecognizer_create()      # ±Ò¥Î°V½m¤HÁy¼Ò«¬
-faces = []   # Àx¦s¤HÁy¦ì¸m¤j¤pªº¦ê¦C
-ids = []     # °O¿ı¸Ó¤HÁy id ªº¦ê¦C
+path ='C:/Users/User/.vscode/haarcascade_frontalface_default.xml'  # è¼‰å…¥äººè‡‰è¿½è¹¤æ¨¡å‹(opencvçš„githubæä¾›)
+detector = cv2.CascadeClassifier(path)            # è¼‰å…¥äººè‡‰è¿½è¹¤æ¨¡å‹
+recog = cv2.face.LBPHFaceRecognizer_create()      # å•Ÿç”¨è¨“ç·´äººè‡‰æ¨¡å‹
+faces = []   # å„²å­˜äººè‡‰ä½ç½®å¤§å°çš„ä¸²åˆ—
+ids = []     # è¨˜éŒ„è©²äººè‡‰ id çš„ä¸²åˆ—
 
 print('Start!')
 print('wait for a minute...')
 
 for i in range(505):
-    img = cv2.imread("C:/Users/User/sci/20805/%d.jpg"%(i))           # ¨Ì§Ç¶}±Ò¸ê®Æ§¨¤ºclass 1ªº·Ó¤ù
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # ¦â±mÂà´«¦¨¶Â¥Õ
-    img_np = np.array(gray,'uint8')               # Âà´«¦¨«ü©w½s½Xªº numpy °}¦C
-    face = detector.detectMultiScale(gray)        # Â^¨ú¤HÁy°Ï°ì
+    img = cv2.imread("C:/Users/User/sci/20805/%d.jpg"%(i))           # ä¾åºé–‹å•Ÿè³‡æ–™å¤¾å…§class 1çš„ç…§ç‰‡
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # è‰²å½©è½‰æ›æˆé»‘ç™½
+    img_np = np.array(gray,'uint8')               # è½‰æ›æˆæŒ‡å®šç·¨ç¢¼çš„ numpy é™£åˆ—
+    face = detector.detectMultiScale(gray)        # æ“·å–äººè‡‰å€åŸŸ
     for(x,y,w,h) in face:
-        faces.append(img_np[y:y+h,x:x+w])         # °O¿ı¤HÁyªº¦ì¸m©M¤j¤p¤º¹³¯Àªº¼Æ­È
-        ids.append(1)                             # °O¿ı¤HÁy¹ïÀ³ªºid¡A¥u¯à¬O¾ã¼Æ¡A³£¬O1ªí¥Üclass 1ªºid¬°1
+        faces.append(img_np[y:y+h,x:x+w])         # è¨˜éŒ„äººè‡‰çš„ä½ç½®å’Œå¤§å°å…§åƒç´ çš„æ•¸å€¼
+        ids.append(1)                             # è¨˜éŒ„äººè‡‰å°æ‡‰çš„idï¼Œåªèƒ½æ˜¯æ•´æ•¸ï¼Œéƒ½æ˜¯1è¡¨ç¤ºclass 1çš„idç‚º1
 
 for i in range(505):
     img = cv2.imread("C:/Users/User/sci/20803/%d.jpg"%(i))          #class 2
@@ -41,7 +41,7 @@ for i in range(514):
 
               
 
-print('training...')                              # ´£¥Ü¶}©l°V½m
-recog.train(faces,np.array(ids))                  # ¶}©l°V½m
-recog.save('face.yml')                            # °V½m§¹¦¨Àx¦s¬° face.yml
+print('training...')                              # æç¤ºé–‹å§‹è¨“ç·´
+recog.train(faces,np.array(ids))                  # é–‹å§‹è¨“ç·´
+recog.save('face.yml')                            # è¨“ç·´å®Œæˆå„²å­˜ç‚º face.yml
 print('ok!')

@@ -1,8 +1,8 @@
 #coding=utf-8
 """
-1.¤JÀ]¡B¥XÀ]®É¶¡
-2.¬İ­n¤£­n°»´ú¨ìÁy«áª½±µÃö±¼
-3.§ä§ä¬İ¦³¨S¦³µe­±¤£·|°¨¤W¥d¦íªº¤èªk
+1.å…¥é¤¨ã€å‡ºé¤¨æ™‚é–“
+2.çœ‹è¦ä¸è¦åµæ¸¬åˆ°è‡‰å¾Œç›´æ¥é—œæ‰
+3.æ‰¾æ‰¾çœ‹æœ‰æ²’æœ‰ç•«é¢ä¸æœƒé¦¬ä¸Šå¡ä½çš„æ–¹æ³•
 """
 import datetime
 import openpyxl
@@ -10,23 +10,23 @@ import cv2
 import pyfirmata
 import time
 
-wb = openpyxl.load_workbook('scii.xlsx', data_only=True)  #¶}±Ò±ı¿é¤J¸ê®Æªºªí®æ
+wb = openpyxl.load_workbook('scii.xlsx', data_only=True)  #é–‹å•Ÿæ¬²è¼¸å…¥è³‡æ–™çš„è¡¨æ ¼
 s1 = wb['worksheet1']            
 
-date = datetime.date.today()    #¬ö¿ı°»´ú®É¤é´Á
+date = datetime.date.today()    #ç´€éŒ„åµæ¸¬æ™‚æ—¥æœŸ
 
-recognizer = cv2.face.LBPHFaceRecognizer_create()         # ±Ò¥Î°V½m¤HÁy¼Ò«¬
-recognizer.read('face.yml')                               # Åª¨ú§Ú­Ì­è­è°V½mªº¼Ò«¬¸ê®Æ
-cascade_path = 'C:/Users/User/.vscode/haarcascade_frontalface_default.xml'  # ¸ü¤J¤HÁy°lÂÜ¼Ò«¬(opencvªºgithub´£¨Ñ)
-face_cascade = cv2.CascadeClassifier(cascade_path)        # ±Ò¥Î¤HÁy°lÂÜ
+recognizer = cv2.face.LBPHFaceRecognizer_create()         # å•Ÿç”¨è¨“ç·´äººè‡‰æ¨¡å‹
+recognizer.read('face.yml')                               # è®€å–æˆ‘å€‘å‰›å‰›è¨“ç·´çš„æ¨¡å‹è³‡æ–™
+cascade_path = 'C:/Users/User/.vscode/haarcascade_frontalface_default.xml'  # è¼‰å…¥äººè‡‰è¿½è¹¤æ¨¡å‹(opencvçš„githubæä¾›)
+face_cascade = cv2.CascadeClassifier(cascade_path)        # å•Ÿç”¨äººè‡‰è¿½è¹¤
 
-pin1 = 11                           #LED¿O¦ì¤l³]©w
+pin1 = 11                           #LEDç‡ˆä½å­è¨­å®š
 pin2 = 12
 pin3 = 13
 port = 'COM3'
-board = pyfirmata.Arduino(port)     #³s±µ¨ìArduino
+board = pyfirmata.Arduino(port)     #é€£æ¥åˆ°Arduino
 
-cap = cv2.VideoCapture(0)           # ¶}±ÒÄá¼v¾÷
+cap = cv2.VideoCapture(0)           # é–‹å•Ÿæ”å½±æ©Ÿ
 if not cap.isOpened():
     print("Cannot open camera")
     exit()
@@ -35,33 +35,33 @@ while True:
     if not ret:
         print("Cannot receive frame")
         break
-    img = cv2.resize(img,(540,300))              # ÁY¤p¤Ø¤o¡A¥[§Ö¿ëÃÑ®Ä²v
-    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)  # Âà´«¦¨¶Â¥Õ
-    faces = face_cascade.detectMultiScale(gray)  # °lÂÜ¤HÁy ( ¬°¤F¼Ğ°O¥X¥~®Ø )
+    img = cv2.resize(img,(540,300))              # ç¸®å°å°ºå¯¸ï¼ŒåŠ å¿«è¾¨è­˜æ•ˆç‡
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)  # è½‰æ›æˆé»‘ç™½
+    faces = face_cascade.detectMultiScale(gray)  # è¿½è¹¤äººè‡‰ ( ç‚ºäº†æ¨™è¨˜å‡ºå¤–æ¡† )
 
-    # «Ø¥ß±ıÅã¥Ü¤§id¹ïÀ³¦WºÙ
+    # å»ºç«‹æ¬²é¡¯ç¤ºä¹‹idå°æ‡‰åç¨±
     name = {
         '1':'Yichen',
         '2':'LiangYing',
         '3':'Orange'
     }
     
-    Yichen = 0              #¨C­Ó¤H(§PÂ_²{¦b¶}Ãöª¬ºA)ªºªì©l­È³]¬°0(Ãö³¬)
+    Yichen = 0              #æ¯å€‹äºº(åˆ¤æ–·ç¾åœ¨é–‹é—œç‹€æ…‹)çš„åˆå§‹å€¼è¨­ç‚º0(é—œé–‰)
     LiangYing = 0
     Orange = 0
     
     for(x,y,w,h) in faces:
-        cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)            # ¼Ğ°O¤HÁy¥~®Ø
-        idnum,mistake = recognizer.predict(gray[y:y+h,x:x+w])  # ¨ú¥X id ¸¹½X¥H¤Î¿ëÃÑ»~®t­È
+        cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)            # æ¨™è¨˜äººè‡‰å¤–æ¡†
+        idnum,mistake = recognizer.predict(gray[y:y+h,x:x+w])  # å–å‡º id è™Ÿç¢¼ä»¥åŠè¾¨è­˜èª¤å·®å€¼
         if mistake < 120:
-            text = name[str(idnum)]                               # ¦pªG»~®t­È¤p©ó120¡A¨ú±o¹ïÀ³ªº¦W¦r
-            if idnum == 1 and Yichen == 0:                        # ·í°»´ú¨ìid=1¥B¬°Ãö³¬ª¬ºA®É°õ¦æ¶}¿O
+            text = name[str(idnum)]                               # å¦‚æœèª¤å·®å€¼å°æ–¼120ï¼Œå–å¾—å°æ‡‰çš„åå­—
+            if idnum == 1 and Yichen == 0:                        # ç•¶åµæ¸¬åˆ°id=1ä¸”ç‚ºé—œé–‰ç‹€æ…‹æ™‚åŸ·è¡Œé–‹ç‡ˆ
                 board.digital[pin1].write(1) 
                 time.sleep(5)
-                s1['B3'].value = date                             # ©ó¸Ó©m¦W¦C¶ñ¤J¤JÀ]¤é´Á
+                s1['B3'].value = date                             # æ–¼è©²å§“ååˆ—å¡«å…¥å…¥é¤¨æ—¥æœŸ
                 Yichen = 1
                 print("1 on")
-            if idnum == 1 and Yichen == 1:                        # ·í°»´ú¨ìid=2¥B¬°¶}±Òª¬ºA®É°õ¦æÃö¿O
+            if idnum == 1 and Yichen == 1:                        # ç•¶åµæ¸¬åˆ°id=2ä¸”ç‚ºé–‹å•Ÿç‹€æ…‹æ™‚åŸ·è¡Œé—œç‡ˆ
                 board.digital[pin1].write(0)                      
                 time.sleep(5)
                 Yichen = 0
@@ -90,12 +90,12 @@ while True:
                 print("3 off")
                 
         else:
-            text = '???'                                          # °»´ú¤£¥X¬O½Ö®ÉÅã¥Ü ???
-        cv2.putText(img, text, (x,y-5),cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2, cv2.LINE_AA) # ¦b¤HÁy¥~®Ø®Ç¥[¤W¦W¦r
+            text = '???'                                          # åµæ¸¬ä¸å‡ºæ˜¯èª°æ™‚é¡¯ç¤º ???
+        cv2.putText(img, text, (x,y-5),cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2, cv2.LINE_AA) # åœ¨äººè‡‰å¤–æ¡†æ—åŠ ä¸Šåå­—
     
-    wb.save('sciii.xlsx')               #Àx¦sªí®æ
+    wb.save('sciii.xlsx')               #å„²å­˜è¡¨æ ¼
     cv2.imshow('camera', img)
     if cv2.waitKey(5) == ord('q'):
-        break    # «ö¤U q Áä°±¤î
+        break    # æŒ‰ä¸‹ q éµåœæ­¢
 cap.release()
 cv2.destroyAllWindows()
