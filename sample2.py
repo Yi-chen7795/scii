@@ -1,6 +1,6 @@
 #coding=utf-8
 """
-1.入館、出館時間
+1.入館、出館時間 OK!
 2.看要不要偵測到臉後直接關掉
 3.找找看有沒有畫面不會馬上卡住的方法
 """
@@ -10,11 +10,11 @@ import cv2
 import pyfirmata
 import time
 
-wb = openpyxl.load_workbook('scii.xlsx', data_only=True)  #開啟欲輸入資料的表格
+wb = openpyxl.load_workbook('scii.xlsx')  #開啟欲輸入資料的表格
 s1 = wb['worksheet1']            
 
 date = datetime.date.today()    #紀錄偵測時日期
-#hours =  time.strftime("%H:%M:%S", time.localtime())
+hours =  time.strftime("%H:%M:%S", time.localtime())
 
 
 recognizer = cv2.face.LBPHFaceRecognizer_create()         # 啟用訓練人臉模型
@@ -61,39 +61,39 @@ while True:
                 board.digital[pin1].write(1) 
                 time.sleep(5)
                 s1['B3'].value = date                             # 於該姓名列填入入館日期
-                #s1['C3'].value = hours
+                s1['C3'].value = hours
                 Yichen = 1
                 print("1 on")
             if idnum == 1 and Yichen == 1:                        # 當偵測到id=2且為開啟狀態時執行關燈
                 board.digital[pin1].write(0)                      
                 time.sleep(5)
-                #s1['D3'].value = hours
+                s1['D3'].value = hours
                 Yichen = 0
                 print("1 off")
             if idnum == 2 and LiangYing == 0:
                 board.digital[pin2].write(1)
                 time.sleep(5)
                 s1['B2'].value = date
-                #s1['C2'].value = hours
+                s1['C2'].value = hours
                 LiangYing = 1
                 print("2 on")
-            if idnum == 1 and LiangYing == 1:
+            if idnum == 2 and LiangYing == 1:
                 board.digital[pin2].write(0)
                 time.sleep(5)
-                #s1['D2'].value = hours
+                s1['D2'].value = hours
                 LiangYing = 0
                 print("2 off")
             if idnum == 3 and Orange == 0:
                 board.digital[pin3].write(1)
                 time.sleep(5)
                 s1['B4'].value = date
-                #s1['C4'].value = hours
+                s1['C4'].value = hours
                 Orange = 1
                 print("3 on")
-            if idnum == 1 and Orange == 1:
+            if idnum == 3 and Orange == 1:
                 board.digital[pin3].write(0)
                 time.sleep(5)
-                #s1['D4'].value = hours
+                s1['D4'].value = hours
                 Orange = 0
                 print("3 off")
                 
