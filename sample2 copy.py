@@ -13,10 +13,6 @@ import time
 wb = openpyxl.load_workbook('scii.xlsx')  #開啟欲輸入資料的表格
 s1 = wb['worksheet1']            
 
-date = datetime.date.today()    #紀錄偵測時日期
-hours =  time.strftime("%H:%M:%S", time.localtime())
-
-
 recognizer = cv2.face.LBPHFaceRecognizer_create()         # 啟用訓練人臉模型
 recognizer.read('face.yml')                               # 讀取我們剛剛訓練的模型資料
 cascade_path = 'C:/Users/User/sci/haarcascade_frontalface_default.xml'  # 載入人臉追蹤模型(opencv的github提供)
@@ -48,26 +44,30 @@ while True:
 
     # 建立欲顯示之id對應名稱
     name = {
-        '1':'Yichen',
-        '2':'LiangYing',
-        '3':'Orange'
+        '1':'ID=1',
+        '2':'ID=2',
+        '3':'ID=3'
     }
     
-    
+    date = datetime.date.today()    #紀錄偵測時日期
+    hours =  time.strftime("%H:%M:%S", time.localtime())
+
     for(x,y,w,h) in faces:
         cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)            # 標記人臉外框
         idnum,confidence = recognizer.predict(gray[y:y+h,x:x+w])  # 取出 id 號碼以及辨識誤差值
-        if confidence < 120:
+        if confidence > 50:
             text = name[str(idnum)]                               # 如果誤差值小於120，取得對應的名字
             if idnum == 1 and Yichen == 0 and count % 30 == 0:                        # 當偵測到id=1且為關閉狀態時執行開燈
                 board.digital[pin1].write(1)
                 s1['B3'].value = date                             # 於該姓名列填入入館日期
                 s1['C3'].value = hours
                 Yichen = 1
+                count += 1
             if idnum == 1 and Yichen == 1 and count % 30 == 0:                        # 當偵測到id=2且為開啟狀態時執行關燈
                 board.digital[pin1].write(0)
                 s1['D3'].value = hours
                 Yichen = 0
+                count += 1
             if idnum == 2 and LiangYing == 0 and count % 30 == 0:
                 board.digital[pin2].write(1)
                 s1['B2'].value = date
